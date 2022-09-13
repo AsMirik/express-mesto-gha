@@ -13,18 +13,18 @@ module.exports.getUsers = async (req, res, next) => {
 };
 
 module.exports.getUserById = async (req, res, next) => {
-  const id = req.user._id;
-
+  const { userId } = req.params;
   try {
-    const user = await User.findById(id);
-
+    const user = await User.findById(userId);
     if (!user) {
-      return next(new NotFoundError('Запрашиваемый пользователь не найден'));
+      return next(new NotFoundError('Пользователь не найден'));
     }
-
     return res.status(200).send(user);
   } catch (err) {
-    return next(new ServerError());
+    if (err.name === 'CastError') {
+      return next(new BadRequestError('Некорректные данные пользователя'));
+    }
+    return next(new ServerError('Ошибка на сервере'));
   }
 };
 
