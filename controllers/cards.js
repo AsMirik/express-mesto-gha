@@ -17,7 +17,7 @@ module.exports.createCard = async (req, res, next) => {
   }
 };
 
-module.exports.deleteCard = async (res, req, next) => {
+module.exports.deleteCard = async (req, res, next) => {
   const { cardId } = req.params;
   try {
     const card = await Card.findByIdAndDelete(cardId);
