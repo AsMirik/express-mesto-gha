@@ -2,6 +2,7 @@ const Card = require('../models/card');
 const ServerError = require('../errors/ServerError');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 module.exports.createCard = async (req, res, next) => {
   const owner = req.user._id;
@@ -19,10 +20,14 @@ module.exports.createCard = async (req, res, next) => {
 
 module.exports.deleteCard = async (req, res, next) => {
   const { cardId } = req.params;
+  const id = req.user._id;
   try {
     const card = await Card.findByIdAndDelete(cardId);
     if (!card) {
       return next(new NotFoundError('Такой карточки нет'));
+    }
+    if (id !== card.owner.toString()) {
+      return next(new ForbiddenError('Нет прав на удаление данной карточки'));
     }
     return res.status(200).send(card);
   } catch (err) {
