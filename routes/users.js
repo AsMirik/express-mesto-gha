@@ -26,7 +26,7 @@ router.patch('/me/avatar', celebrate({
     avatar: Joi
       .string()
       // eslint-disable-next-line no-useless-escape
-      .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
+      .regex(/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/)
       .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
   }),
 }), updateAvatar);
