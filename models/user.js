@@ -20,9 +20,9 @@ const userSchema = new mongoose.Schema({
     validate: {
       validator(v) {
         // eslint-disable-next-line no-useless-escape
-        return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(v);
+        return /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/.test(v);
       },
-      message: 'Невалидные ссылка',
+      message: 'Невалидная ссылка',
     },
   },
   email: {
@@ -41,5 +41,14 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 });
+
+// eslint-disable-next-line func-names
+userSchema.methods.toJSON = function () {
+  const user = this.toObject();
+
+  delete user.password;
+
+  return user;
+};
 
 module.exports = mongoose.model('user', userSchema);
