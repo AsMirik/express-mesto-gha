@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const NotFoundError = require('./errors/NotFoundError');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -45,9 +46,7 @@ app.use('/cards', require('./routes/cards'));
 
 app.use(errors());
 
-app.use((req, res) => {
-  res.status(404).send({ message: 'Страница не найдена' });
-});
+app.use((req, res, next) => next(new NotFoundError('Страница не найдена')));
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
@@ -56,7 +55,7 @@ app.use((err, req, res, next) => {
     message: statusCode === 500 ? 'Ошибка на сервере' : message,
   });
 
-  next(err);
+  next();
 });
 
 app.listen(PORT, () => {
